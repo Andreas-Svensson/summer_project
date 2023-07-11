@@ -21,7 +21,7 @@ warning_limit = 100 # will show a warning if creating more than 100 files
 # COMBINATION SETTINGS #
 ########################
 
-# amount of files to create, if 0 or a value larger than all possible combinations is used, then all combinations of settings will be created
+# amount of files to create, if None or a value larger than all possible combinations is used, then all combinations of settings will be created
 # else files with a random subset of combinations will be created, allowing for a wide range of settings without creating a huge amount of files
 
 # how many variations to create?
