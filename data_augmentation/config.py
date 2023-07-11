@@ -28,10 +28,6 @@ warning_limit = 100 # will show a warning if creating more than 100 files
 # valid settings: True, False
 use_random_combinations = False
 
-# which random combination to use?
-# valid settings: None added yet
-random_type = None
-
 
 
 ######################
