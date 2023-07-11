@@ -25,8 +25,8 @@ warning_limit = 100 # will show a warning if creating more than 100 files
 # else files with a random subset of combinations will be created, allowing for a wide range of settings without creating a huge amount of files
 
 # how many variations to create?
-# valid settings: value (0 = all combinations)
-combinations = warning_limit # setting to warning limit will create exactly as many files as specified above
+# valid settings: value (None = all combinations)
+combination_limit = warning_limit # setting to warning limit will create exactly as many files as specified above
 
 
 
