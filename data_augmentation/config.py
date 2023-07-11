@@ -21,12 +21,12 @@ warning_limit = 100 # will show a warning if creating more than 100 files
 # COMBINATION SETTINGS #
 ########################
 
-# should the file create augmentations with random combinations of settings instead of every single one?
-# using random combinations will create less files and take up less file size, while allowing for a broader range of variations over all
+# amount of files to create, if 0 or a value larger than all possible combinations is used, then all combinations of settings will be created
+# else files with a random subset of combinations will be created, allowing for a wide range of settings without creating a huge amount of files
 
-# should the script use random combinations?
-# valid settings: True, False
-use_random_combinations = False
+# how many variations to create?
+# valid settings: value (0 = all combinations)
+combinations = warning_limit # setting to warning limit will create exactly as many files as specified above
 
 
 
