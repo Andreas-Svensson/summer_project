@@ -37,21 +37,17 @@ def transpose_waveform(waveform, transposition_factor, sampling_rate):
 
     return transposed_waveform
 
+def add_noise(waveform, amplitude=0.06):
+    noise = np.random.normal(scale=amplitude, size=len(waveform))
+    noisy_waveform = waveform + noise
+
+    return noisy_waveform
+
 if __name__ == "__main__":
     f = 440  # Sine wave @ 440 Hz
     x = generate_waveform(f, 'sine')
-
-    print("Original waveform duration:", len(x) / 44100, "seconds")
-
     sd.play(x)
     sd.wait()
 
-    transposed_x = transpose_waveform(x, 0.9, 44100)
-    print("Transposed waveform duration (0.9):", len(transposed_x) / 44100, "seconds")
-    sd.play(transposed_x)
-    sd.wait()
-
-    transposed_x = transpose_waveform(x, 1.7, 44100)
-    print("Transposed waveform duration (0.7):", len(transposed_x) / 44100, "seconds")
-    sd.play(transposed_x)
+    sd.play(add_noise(x))
     sd.wait()
