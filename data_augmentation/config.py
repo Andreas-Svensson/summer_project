@@ -1,6 +1,29 @@
 # config file for data augmentation script
 # change any values here to alter how augmented data is generated
 
+from pathlib import Path
+
+
+
+####################
+# SOURCE DIRECTORY #
+####################
+
+# path to read existing data from (starts from project root directory)
+source_path = "data" # project root -> data folder
+
+# filetype of files to read
+source_filetype = ".mp3" # will read all files of this type in source directory
+
+
+
+####################
+# TARGET DIRECTORY #
+####################
+
+# path to output augmented data to (starts from project root directory)
+target_path = "data_augmentation\data" # project root -> data_agumentation folder -> data folder
+
 
 
 ########################
