@@ -53,13 +53,17 @@ combination_limit = warning_limit # setting to warning limit will create exactly
 
 
 
-######################
-# VARIATION SETTINGS #
-######################
+###################
+# REVERB SETTINGS #
+###################
 
-# values for setting_one
-setting_one = [1, 2, 3, 4, 5]
+# reverb function adds echo to the original audio
 
-# values for setting_two
-setting_two = [1, 2, 3, 4, 5]
+# amount of layers in reverb (setting to 5 will add 5 delayed echos of the original sound at reduced volume)
+setting_reverb_layers = [25]
 
+# amount volume is scaled down for each reverb layer (setting to 0.2 will set volume to 20% of last layer)
+setting_reverb_scaling = [0.6]
+
+# delay between each reverb layer (setting to 1 at 44100 hz will set delay to 1/44100th of a second)
+setting_reverb_delay = [5000]
