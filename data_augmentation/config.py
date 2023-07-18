@@ -1,8 +1,6 @@
 # config file for data augmentation script
 # change any values here to alter how augmented data is generated
 
-from pathlib import Path
-
 
 
 ####################
