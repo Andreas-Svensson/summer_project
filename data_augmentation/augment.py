@@ -48,6 +48,14 @@ def exceeds_warning_limit(files_created, warning_limit):
                 sys.exit()
 
 
+def update_file_name(file_name, settings):
+    for setting in settings: # iterate over settings used in current function
+        cleaned_setting = str(setting).replace(".", "") # replace dots in case of floats so that 0.1 -> 01
+        file_name += "_" + cleaned_setting # add setting value after an undercore (i.e. test.mp3 -> test_setting.mp3)
+
+    return file_name
+
+
 if __name__ == "__main__":
 
 
@@ -89,7 +97,7 @@ if __name__ == "__main__":
 
             # perform augmentation 1
             audio_data = reverb(audio_data, combination[0], combination[1], combination[2])
-            new_file_name += f"_{combination[0]}_{combination[1]}_{combination[2]}" # update file name
+            new_file_name = update_file_name(new_file_name, [combination[0], combination[1], combination[2]])
         
             # save file
             new_file_name += source_filetype # add file extension
