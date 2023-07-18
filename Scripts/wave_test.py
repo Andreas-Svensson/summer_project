@@ -1,5 +1,6 @@
 import numpy as np
 import sounddevice as sd
+from scipy.signal import butter, filtfilt
 
 def generate_waveform(frequency, type, dur=1, sampling_rate=44100) -> np.ndarray:
     """
@@ -23,6 +24,8 @@ def generate_waveform(frequency, type, dur=1, sampling_rate=44100) -> np.ndarray
         x = np.sign(np.sin(2 * np.pi * frequency * t))
     elif type == 'saw':
         x = 2 * (np.mod(frequency * t, 1) - 0.5)
+    elif type == 'noise':
+        x = np.random.random_sample(int(dur * sampling_rate)) * 2 - 1
     else:
         raise ValueError('Choose either "sine", "square" or "saw".')
 
@@ -69,8 +72,59 @@ def bitcrush(waveform, bit_depth):
     quantize = np.round(waveform / max_value * quantization_levels) / quantization_levels
     return quantize * max_value
 
+def tailify(waveform, sample_rate=44100, tail_duration=0.2, amplitude=0.1):
+    tail_samples = int(tail_duration * sample_rate)
+
+    # Create fading tail envelope
+    tail_env = np.linspace(1.0, 0.0, tail_samples)
+
+    # Apply the fading tail to the waveform
+    waveform[-tail_samples:] *= amplitude * tail_env
+
+    return waveform / np.max(np.abs(waveform))
+
+def pass_filter(waveform, sample_rate=44100, cutoff_frequency=250, btype='low'):
+
+    nyquist_frequency = 0.5 * sample_rate # ayy its nyquist
+    normalized_cutoff_frequency = cutoff_frequency / nyquist_frequency
+    b, a = butter(4, normalized_cutoff_frequency, btype=btype)
+
+    filtered_waveform = filtfilt(b, a, waveform)
+
+    return filtered_waveform / np.max(np.abs(filtered_waveform))
+
 
 if __name__ == "__main__":
+
+    snare = tailify(generate_waveform(500, 'sine', 0.2))
+    kick = tailify(pass_filter(generate_waveform(250, 'sine', 0.2)))
+    hat = tailify(pass_filter(generate_waveform(2000, 'noise', 0.2), cutoff_frequency=1400, btype='low'), tail_duration=0.1)
+
+    for i in range(20):
+        sd.play(kick)
+        sd.wait()
+
+        sd.play(hat)
+        sd.wait()
+
+        sd.play(snare)
+        sd.wait()
+
+        sd.play(hat)
+        sd.wait()
+
+
+
+    freq = 440.0
+    for i in range(9):
+        waveform = generate_waveform(frequency=freq, type='square', dur=0.02)
+
+        # Play the waveform
+        sd.play(bitcrush(waveform, bit_depth=freq*0.01))
+        sd.wait()
+
+        freq += 20
+    
     d = generate_waveform(frequency=587.33, type='saw', dur=0.05)
     a = generate_waveform(frequency=880, type='saw', dur=0.1)
     gs = generate_waveform(frequency=830.61, type='saw', dur=0.3)
@@ -120,6 +174,9 @@ if __name__ == "__main__":
     sd.play(a)
     sd.wait()
 
+    gs = bitcrush(gs, 0.7)
+    g = bitcrush(g, 0.9)
+
     sd.play(gs)
     sd.wait()
 
@@ -141,3 +198,47 @@ if __name__ == "__main__":
     sd.play(g)
     sd.wait()
 
+
+    d = generate_waveform(frequency=587.33, type='sine', dur=0.05)
+    a = generate_waveform(frequency=880, type='sine', dur=0.1)
+    gs = generate_waveform(frequency=830.61, type='sine', dur=0.3)
+    g = generate_waveform(frequency=783.99, type='sine', dur=0.3)
+    f = generate_waveform(frequency=698.46, type='sine', dur=0.1)
+
+
+    d = bitcrush(d, 0.7)
+
+    sd.play(d)
+    sd.wait()
+
+    sd.play(d)
+    sd.wait()
+
+    a = bitcrush(a, 0.9)
+
+    sd.play(a)
+    sd.wait()
+
+    gs = bitcrush(gs, 0.7)
+    g = bitcrush(g, 0.9)
+
+    sd.play(gs)
+    sd.wait()
+
+    sd.play(g)
+    sd.wait()
+
+    sd.play(f)
+    sd.wait()
+
+    sd.play(f)
+    sd.wait()
+
+    sd.play(d)
+    sd.wait()
+
+    sd.play(f)
+    sd.wait()
+
+    sd.play(g)
+    sd.wait()
