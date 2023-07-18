@@ -1,6 +1,7 @@
 from config import * # get settings from config file
 
 import soundfile as sf
+import numpy as np
 
 import itertools
 import math
@@ -9,14 +10,16 @@ import random
 import sys
 
 
-# TODO: implement augmentation functions
-def placeholder_aug_one(setting, audio_data):
-    # TODO: perform some augmentation with setting here
-    return audio_data
+# TODO: implement more augmentation functions
+def reverb(audio_data, layers, scaling, delay):
+    echo = np.array(audio_data) # create copy of original sound to be altered and overlayed as echo
 
-
-def placeholder_aug_two(setting, audio_data):
-    # TODO: perform some augmentation with setting here
+    for _ in range(layers): # iterate to add n layers of echo to original sound
+        # shift sound to the right (by prepending zeroes and removing same amount of indices from the end)
+        # then scale volume down by multiplying with scaling value
+        echo = np.concatenate((np.zeros(delay), echo))[:-delay] * scaling
+        audio_data += echo # add reverb echo over original sound
+    
     return audio_data
 
 
@@ -50,7 +53,12 @@ if __name__ == "__main__":
 
     # initial setup
 
-    settings = [setting_one, setting_two] # store all config settings in one list
+    settings = [
+        setting_reverb_layers,
+        setting_reverb_scaling,
+        setting_reverb_delay,
+    ] # store all config settings in one list
+
     combinations = create_combinations(combination_limit, settings) # get all combinations to use (random if exceeding combination_limit)
 
     files_to_create = len(combinations) # amount of files that will be created if the code continues
@@ -80,12 +88,8 @@ if __name__ == "__main__":
             new_file_name = file_name[:-len(source_filetype):] # get name of file without extension (i.e. "file.mp3" -> "file")
 
             # perform augmentation 1
-            audio_data = placeholder_aug_one(combination[0], audio_data)
-            new_file_name += f"_{combination[0]}" # update file name
-
-            # perform augmentation 2
-            audio_data = placeholder_aug_two(combination[1], audio_data)
-            new_file_name += f"_{combination[1]}" # update file name
+            audio_data = reverb(audio_data, combination[0], combination[1], combination[2])
+            new_file_name += f"_{combination[0]}_{combination[1]}_{combination[2]}" # update file name
         
             # save file
             new_file_name += source_filetype # add file extension
